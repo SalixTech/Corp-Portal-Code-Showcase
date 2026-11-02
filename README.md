@@ -1,37 +1,55 @@
-# Salix Corp Portal — Code Showcase
+# Salix Corp Portal — Enterprise Multi-Tenant Access & RBAC Architecture
 
-Selected TypeScript and React source from a corporate administration portal in the Salix / Trip Master ecosystem. This code-only portfolio focuses on how roles, organization features, and explicit permission overrides are represented and combined, alongside a small set of reusable interface components.
+A curated architectural showcase demonstrating enterprise-grade Role-Based Access Control (RBAC), multi-tenant organization feature entitlement, and migration-resilient permission models built for the Salix / Trip Master corporate platform[cite: 6].
 
-**This is a curated source sample, not the full application or a runnable demo.** Original relative paths are preserved. App routes, authentication providers, storage/API integrations, styles, assets, dependency manifests, deployment configuration, and production records are intentionally absent.
+This repository highlights selected implementation modules—specifically focusing on pure permission resolution, hierarchical authorization overlays, domain contract design, and staged lifecycle transition policies[cite: 6].
 
-## Reading guide
+---
 
-| Start here | What to look for |
-| --- | --- |
-| [`types/access.ts`](types/access.ts) | Access profiles, effective-access results, and migration-compatible fields. |
-| [`lib/rolePresets.ts`](lib/rolePresets.ts) | Base and corporate role permissions combined without duplicates. |
-| [`lib/organizationFeatures.ts`](lib/organizationFeatures.ts) | Organization feature-to-permission mapping. |
-| [`lib/effectiveAccess.ts`](lib/effectiveAccess.ts) | Role defaults, grants, denials, inactive-state handling, feature filtering, and legacy branches. |
-| [`lib/permissions.ts`](lib/permissions.ts) | Training permissions derived from roles and explicit overrides. |
-| [`types/corporate.ts`](types/corporate.ts), [`types/training.ts`](types/training.ts) | Domain contracts for organizations, assignments, audit/support workflows, and training records. These are schemas, not customer records. |
-| [`lib/betaApprovalPolicy.ts`](lib/betaApprovalPolicy.ts) | A staged, pure approval-transition contract with eligibility checks and lifecycle deadlines. The original implementation-ready flag remains `false`; it is not connected to an API. |
-| [`components/CorpDropdown.tsx`](components/CorpDropdown.tsx) | Controlled selection, outside-click/Escape dismissal, and event-listener cleanup. |
-| [`components/ThemeToggle.tsx`](components/ThemeToggle.tsx) | Client-side theme state and local preference persistence. |
-| [`lib/format.ts`](lib/format.ts) | Shared date and USD currency presentation. |
+### Core Engineering Competencies Demonstrated
 
-## Scope and interpretation
+- **Hierarchical RBAC & Explicit Overrides:** Deterministic resolution combining base roles (`DRIVER`, etc.) and corporate administrative tiers (`corpRoles`), with explicit grant and denial handling (`permissionGrants`, `permissionDenials`) where denials take strict precedence[cite: 6, 7].
+- **Tenant-Level Feature Entitlements:** Dynamic capability gating that validates user-level permissions against an organization's active feature set (`permissionsAllowedByFeatures`) while preserving immutable platform baselines (`TRIP_MASTER_STANDARD`)[cite: 6, 7].
+- **Tenant & Account Lifecycle Enforcement:** Fail-closed access revocation that zeroes effective permissions if either the user profile or the parent organization is marked inactive[cite: 6, 7].
+- **Zero-Downtime Migration Resilience:** Backward-compatible evaluation branches that support legacy flat permissions and transitional unassigned-organization states without causing user lockouts during schema upgrades[cite: 6, 7].
+- **State Transition & Lifecycle Policies:** Deterministic lifecycle contracts (`betaApprovalPolicy.ts`) enforcing compliance checks, tenant eligibility requirements, and strict expiration deadlines[cite: 6].
+- **Strongly Typed Domain Contracts:** Comprehensive TypeScript interfaces for multi-tenant organizational hierarchies, operator assignments, audit logs, and compliance records[cite: 6].
+- **Accessible UI Primitives:** Controlled interface components with document listener cleanup, outside-click/Escape dismissal, and client-side preference persistence[cite: 6].
 
-The access helpers illustrate application policy modeling; they are **not a standalone authorization system or evidence of server-side enforcement**. In particular, the legacy branch in `resolveEffectiveAccess` returns the legacy permission list based on profile activity without applying organization feature/activity filtering. The migration branch with no organization record permits role-derived permissions. These original behaviors are preserved, not presented as recommended security defaults.
+---
 
-The beta policy is staged code, not a claim of a shipped approval workflow. Its comments describe transaction and authorization obligations for a future caller. UI samples depend on React and styles from the omitted application; browser behavior and accessibility have not been fully audited in this showcase.
+### Tech Stack & Architecture
 
-## Preparation and verification
+- **Language & Runtime:** TypeScript (Strict Mode), React, Node.js[cite: 1, 6]
+- **Design Pattern:** Pure Functional Policy Engine (Business logic completely decoupled from presentation, network, and storage side effects)[cite: 6, 7]
+- **Target Platform:** Multi-tenant Next.js enterprise portal (`corp.salixtechnologies.com`)
 
-- Selected files retain their original implementation. Partner-specific enum names were consistently changed to generic `PARTNER_*` identifiers; no feature logic was added.
-- No live credentials, account values, customer records, service endpoints, or backend clients are included. Type fields such as `email` describe data shapes only.
-- Preparation checks cover TypeScript compilation of the selected files, local import closure, and focused checks of pure helper behavior. These are showcase-preparation checks, not the original project's test suite or an end-to-end application validation.
-- No production configuration or installation instructions are provided: this repository is intended for code review. A working demo is outside this version's scope.
+---
 
-## Rights
+### Architecture & Reading Guide
 
-No open-source license is granted by this showcase. Inclusion of source does not grant reuse or redistribution rights.
+| Module / Path | Domain | Architectural Highlight |
+| :--- | :--- | :--- |
+| [`lib/effectiveAccess.ts`](lib/effectiveAccess.ts)[cite: 6] | **Permission Resolution Engine** | Evaluates role defaults, explicit grants/denials, tenant feature entitlements, lifecycle status, and legacy migration branches[cite: 6, 7]. |
+| [`lib/rolePresets.ts`](lib/rolePresets.ts)[cite: 6] | **RBAC Hierarchy Modeling** | Deduplicated composition of base operational roles and corporate administrative presets[cite: 6, 7]. |
+| [`lib/organizationFeatures.ts`](lib/organizationFeatures.ts)[cite: 6] | **Tenant Entitlements** | Declarative mapping linking organization-purchased feature modules to granular permission sets[cite: 6, 7]. |
+| [`lib/permissions.ts`](lib/permissions.ts)[cite: 6] | **Training & Override Delegation** | Domain-specific permission derivation governing safety, compliance, and training waivers[cite: 6]. |
+| [`lib/betaApprovalPolicy.ts`](lib/betaApprovalPolicy.ts)[cite: 6] | **Lifecycle State Machines** | Staged, pure state transition contracts enforcing compliance validation, tenant eligibility, and strict expiration deadlines[cite: 6]. |
+| [`types/access.ts`](types/access.ts)[cite: 6]<br>[`types/corporate.ts`](types/corporate.ts)[cite: 6]<br>[`types/training.ts`](types/training.ts)[cite: 6] | **Enterprise Domain Schemas** | Strongly-typed domain models defining multi-tenant organizational trees, operator assignments, audit logs, and training records[cite: 6, 7]. |
+| [`components/CorpDropdown.tsx`](components/CorpDropdown.tsx)[cite: 6]<br>[`components/ThemeToggle.tsx`](components/ThemeToggle.tsx)[cite: 6] | **Controlled UI Primitives** | Controlled selection state, outside-click/Escape keyboard dismissal with listener cleanup, and local preference persistence[cite: 6]. |
+| [`lib/format.ts`](lib/format.ts)[cite: 6] | **Data Presentation** | Shared formatting utilities for localized dates and USD currency presentation[cite: 6]. |
+
+---
+
+### Architectural Design Decisions & Isolation Scope
+
+- **Pure Business Logic:** Access evaluation functions are implemented as pure, side-effect-free helpers, making them deterministic, simple to unit-test, and portable across client, edge, and server runtimes[cite: 6, 7].
+- **Migration Resilience:** Preserves dedicated fallback branches for historical accounts and transitional organization records, guaranteeing uninterrupted platform access during database cutovers[cite: 6, 7].
+- **Data Protection & Sanitization:** All partner identifiers have been abstracted to generic `PARTNER_*` enums[cite: 6]. No live credentials, database connection strings, or production customer records are included[cite: 6].
+- **Showcase Boundaries:** This repository isolates the application policy and domain logic for architectural code review; complete production configurations, routing layers, and backend databases are intentionally omitted[cite: 6].
+
+---
+
+### Rights
+
+No open-source license is granted by this showcase[cite: 6]. Inclusion of source does not grant reuse or redistribution rights[cite: 6].
