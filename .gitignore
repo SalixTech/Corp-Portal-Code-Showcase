@@ -1,0 +1,20 @@
+# Local secrets and private material
+.env
+.env.*
+*.pem
+*.key
+credentials*.json
+service-account*.json
+private/
+
+# Local dependencies, builds, and editor files
+node_modules/
+.next/
+out/
+dist/
+coverage/
+*.tsbuildinfo
+.DS_Store
+.idea/
+.vscode/
+*.log
